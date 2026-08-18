@@ -1,4 +1,10 @@
+import os
+
 class Config:
-    SQLALCHEMY_DATABASE_URI = "postgresql://postgres:goli00@localhost/stockroom_db"
+    SQLALCHEMY_DATABASE_URI = os.getenv(
+        "DATABASE_URL",
+        "postgresql://postgres:password@localhost/stockroom_db"
+    )
+
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SECRET_KEY = "stockroom_secret"
+    SECRET_KEY = os.getenv("SECRET_KEY", "change_this_secret")
