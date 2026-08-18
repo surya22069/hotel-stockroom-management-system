@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kitchen Wastage</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body style="background: linear-gradient(to right, #ff9966, #ff5e62);">
+
+<div class="container mt-5">
+
+    <div class="card shadow-lg p-4" style="border-radius: 15px;">
+
+        <!-- Title -->
+        <div class="text-center mb-4">
+            <h2 class="fw-bold text-danger">Kitchen Wastage</h2>
+            <p class="text-muted">
+                Record damaged or spoiled stock in kitchen
+            </p>
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show"
+                         role="alert">
+                        {{ message }}
+
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert">
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Wastage Form -->
+        <form method="POST">
+
+            <!-- Ingredient -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Ingredient</label>
+
+                <select name="ingredient_id"
+                        id="ingredientSelect"
+                        class="form-select"
+                        required>
+
+                    {% for ingredient in ingredients %}
+                        <option value="{{ ingredient.id }}"
+                                data-unit="{{ ingredient.base_unit }}"
+                                data-stock="{{ ingredient.available_stock }}">
+                            {{ ingredient.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Available Stock -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Available Kitchen Stock</label>
+                <input type="text"
+                       id="availableStock"
+                       class="form-control"
+                       readonly>
+            </div>
+
+            <!-- Wastage Quantity -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Wastage Quantity</label>
+                <input type="number"
+                       step="0.01"
+                       name="quantity"
+                       class="form-control"
+                       placeholder="Enter wastage quantity"
+                       required>
+            </div>
+
+            <!-- Unit -->
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Unit</label>
+                <select name="unit"
+                        id="unitSelect"
+                        class="form-select"
+                        required>
+                </select>
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-grid gap-2">
+
+                <button type="submit" class="btn btn-danger">
+                    Save Kitchen Wastage
+                </button>
+
+                <a href="/chef/dashboard" class="btn btn-primary">
+                    Back to Dashboard
+                </a>
+
+                <a href="/logout" class="btn btn-secondary">
+                    Logout
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+const ingredientSelect = document.getElementById("ingredientSelect");
+const unitSelect = document.getElementById("unitSelect");
+const availableStock = document.getElementById("availableStock");
+
+const unitMap = {
+    "g": ["g", "kg"],
+    "ml": ["ml", "litre"],
+    "pieces": ["pieces"]
+};
+
+function updateFields() {
+    const selectedOption =
+        ingredientSelect.options[ingredientSelect.selectedIndex];
+
+    const baseUnit = selectedOption.getAttribute("data-unit");
+    const stock = selectedOption.getAttribute("data-stock");
+
+    unitSelect.innerHTML = "";
+
+    unitMap[baseUnit].forEach(unit => {
+        let option = document.createElement("option");
+        option.value = unit;
+        option.text = unit;
+        unitSelect.appendChild(option);
+    });
+
+    availableStock.value = stock + " " + baseUnit;
+}
+
+ingredientSelect.addEventListener("change", updateFields);
+
+updateFields();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

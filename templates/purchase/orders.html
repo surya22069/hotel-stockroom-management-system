@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Purchase Orders</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body style="background: linear-gradient(to right, #667eea, #764ba2);">
+
+<div class="container mt-5">
+
+    <div class="card shadow-lg p-4">
+
+        <div class="text-center mb-4">
+            <h2 class="fw-bold text-primary">Purchase Orders</h2>
+        </div>
+
+        <table class="table table-bordered table-hover text-center">
+
+            <thead class="table-primary">
+                <tr>
+                    <th>ID</th>
+                    <th>Ingredient</th>
+                    <th>Vendor</th>
+                    <th>Quantity</th>
+                    <th>Expected Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.ingredient.name }}</td>
+                    <td>{{ order.vendor_name }}</td>
+                    <td>{{ order.ordered_qty }}</td>
+                    <td>{{ order.expected_date }}</td>
+
+                    <td>
+                        {% if order.status == "PENDING_APPROVAL" %}
+                            <span class="badge bg-warning text-dark">
+                                Pending
+                            </span>
+                        {% elif order.status == "APPROVED" %}
+                            <span class="badge bg-success">
+                                Approved
+                            </span>
+                        {% elif order.status == "REJECTED" %}
+                            <span class="badge bg-danger">
+                                Rejected
+                            </span>
+                        {% elif order.status == "RECEIVED" %}
+                            <span class="badge bg-primary">
+                                Received
+                            </span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+
+        <div class="d-grid gap-2">
+            <a href="/purchase/dashboard" class="btn btn-secondary">
+                Back
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

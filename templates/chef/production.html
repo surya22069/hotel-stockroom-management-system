@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kitchen Production</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body style="background: linear-gradient(to right, #ff9966, #ff5e62);">
+
+<div class="container mt-5">
+
+    <div class="card shadow-lg p-4" style="border-radius: 15px;">
+
+        <!-- Title -->
+        <div class="text-center mb-4">
+            <h2 class="fw-bold text-success">Kitchen Production</h2>
+            <p class="text-muted">
+                Select recipe and start preparing
+            </p>
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show"
+                         role="alert">
+                        {{ message }}
+
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert">
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Issued Kitchen Stock -->
+        <div class="mb-4">
+            <h4 class="fw-bold">Issued Kitchen Stock</h4>
+
+            {% if kitchen_stock %}
+                <table class="table table-bordered table-hover text-center mt-3">
+                    <thead class="table-warning">
+                        <tr>
+                            <th>Ingredient</th>
+                            <th>Available Stock</th>
+                            <th>Unit</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for item in kitchen_stock %}
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.stock }}</td>
+                            <td>{{ item.unit }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="text-danger fw-semibold">
+                    No stock issued to kitchen yet.
+                </p>
+            {% endif %}
+        </div>
+
+        <hr>
+
+        <!-- Production Form -->
+        <form method="POST" action="/chef/start-production">
+
+            <!-- Recipe Selection -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Select Recipe</label>
+                <select name="recipe_id" class="form-select" required>
+                    <option value="">-- Select Recipe --</option>
+
+                    {% for recipe in recipes %}
+                        <option value="{{ recipe.id }}">
+                            {{ recipe.dish_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Plates Count -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Number of Plates</label>
+                <input type="number"
+                       name="plates"
+                       min="1"
+                       class="form-control"
+                       placeholder="Enter number of plates"
+                       required>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-grid gap-2">
+
+                <button type="submit" class="btn btn-success">
+                    Start Preparing
+                </button>
+
+                <a href="/chef/dashboard" class="btn btn-primary">
+                    Back to Dashboard
+                </a>
+
+                <a href="/logout" class="btn btn-danger">
+                    Logout
+                </a>
+
+            </div>
+
+        </form>
+
+        <hr>
+
+        <!-- Available Recipes -->
+        <div>
+            <h4 class="fw-bold">Available Recipes</h4>
+
+            {% if recipes %}
+                <table class="table table-bordered table-hover text-center mt-3">
+                    <thead class="table-success">
+                        <tr>
+                            <th>Recipe ID</th>
+                            <th>Recipe Name</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for recipe in recipes %}
+                        <tr>
+                            <td>{{ recipe.id }}</td>
+                            <td>{{ recipe.dish_name }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="text-muted">No recipes available.</p>
+            {% endif %}
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
